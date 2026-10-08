@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quizz — L'assurance affinitaire</title>
+<style>
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+  min-height: 100vh;
+  color: #e2e8f0;
+}
+
+.quiz-container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* === Écran d'accueil === */
+.welcome-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 1.5rem;
+}
+
+.welcome-icon {
+  font-size: 5rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+.welcome-screen h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #818cf8, #c084fc, #f472b6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+}
+
+.welcome-screen p {
+  color: #94a3b8;
+  font-size: 1rem;
+  max-width: 420px;
+  line-height: 1.6;
+}
+
+.difficulty-badges {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.diff-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid;
+}
+
+.start-btn {
+  margin-top: 0.5rem;
+  padding: 0.9rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-family: inherit;
+  color: #fff;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
+}
+
+.start-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(99, 102, 241, 0.55);
+}
+
+.start-btn:active {
+  transform: translateY(0);
+}
+
+/* === Barre de progression === */
+.progress-bar-wrap {
+  margin-bottom: 1.5rem;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+.progress-track {
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6366f1, #a855f7);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+/* === Carte question === */
+.question-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 1.75rem;
+  backdrop-filter: blur(12px);
+}
+
+.question-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.q-number {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #818cf8;
+  background: rgba(99,102,241,0.12);
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+}
+
+.q-difficulty {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid;
+}
+
+.question-text {
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-bottom: 1.25rem;
+  color: #f1f5f9;
+}
+
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.option-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.85rem 1rem;
+  font-size: 0.95rem;
+  font-family: inherit;
+  font-weight: 500;
+  text-align: left;
+  color: #cbd5e1;
+  background: rgba(255,255,255,0.04);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  line-height: 1.4;
+}
+
+.option-btn:hover:not(:disabled) {
+  border-color: #6366f1;
+  background: rgba(99,102,241,0.08);
+  color: #e2e8f0;
+}
+
+.option-btn.selected-correct {
+  border-color: #22c55e;
+  background: rgba(34,197,94,0.12);
+  color: #86efac;
+}
+
+.option-btn.selected-wrong {
+  border-color: #ef4444;
+  background: rgba(239,68,68,0.12);
+  color: #fca5a5;
+}
+
+.option-btn:disabled {
+  cursor: default;
+}
+
+.option-letter {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.selected-correct .option-letter {
+  background: rgba(34,197,94,0.2);
+  border-color: #22c55e;
+  color: #86efac;
+}
+
+.selected-wrong .option-letter {
+  background: rgba(239,68,68,0.2);
+  border-color: #ef4444;
+  color: #fca5a5;
+}
+
+/* === Explication === */
+.explanation-box {
+  margin-top: 1.25rem;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  background: rgba(99,102,241,0.08);
+  border: 1px solid rgba(99,102,241,0.2);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.explanation-box .expl-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #818cf8;
+  margin-bottom: 0.4rem;
+}
+
+.explanation-box p {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #cbd5e1;
+}
+
+.next-btn {
+  margin-top: 1.25rem;
+  width: 100%;
+  padding: 0.85rem;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: inherit;
+  color: #fff;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.next-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* === Écran de résultat === */
+.result-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 1.25rem;
+}
+
+.result-emoji {
+  font-size: 5rem;
+  animation: popIn 0.5s ease;
+}
+
+@keyframes popIn {
+  0% { transform: scale(0); }
+  70% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.result-screen h2 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #f1f5f9;
+}
+
+.score-circle {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 4px solid;
+  position: relative;
+}
+
+.score-circle .score-num {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.score-circle .score-denom {
+  font-size: 1rem;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.result-message {
+  color: #94a3b8;
+  font-size: 1rem;
+  max-width: 400px;
+  line-height: 1.6;
+}
+
+.result-details {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.result-stat {
+  text-align: center;
+}
+
+.result-stat .stat-num {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #f1f5f9;
+}
+
+.result-stat .stat-label {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.restart-btn {
+  margin-top: 0.75rem;
+  padding: 0.85rem 2rem;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: inherit;
+  color: #cbd5e1;
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.15);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.restart-btn:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.25);
+  color: #fff;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .welcome-screen h1 { font-size: 1.5rem; }
+  .question-text { font-size: 1.05rem; }
+  .option-btn { font-size: 0.88rem; padding: 0.75rem 0.85rem; }
+}
+
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const QUESTIONS = [
+  // ─── Niveau facile ───
+  {
+    id: 1,
+    question: "Qu'est-ce que l'assurance affinitaire (ou « embedded insurance ») ?",
+    options: [
+      "Une assurance vendue uniquement en agence physique",
+      "Une assurance intégrée directement au parcours d'achat d'un produit ou service",
+      "Une assurance réservée aux grandes entreprises",
+      "Un type d'assurance-vie collectif"
+    ],
+    correctIndex: 1,
+    explanation: "L'assurance affinitaire est proposée au moment précis où le client achète un bien ou un service (ex : assurance téléphone à l'achat d'un smartphone, assurance voyage lors de la réservation d'un billet).",
+    difficulty: "facile"
+  },
+  {
+    id: 2,
+    question: "Lequel de ces exemples relève de l'assurance affinitaire ?",
+    options: [
+      "Une assurance auto souscrite en comparateur en ligne",
+      "La garantie prolongée proposée à l'achat d'un laptop",
+      "Une mutuelle santé souscrite par l'employeur",
+      "Une assurance responsabilité civile vie privée"
+    ],
+    correctIndex: 1,
+    explanation: "La garantie prolongée offerte au moment de l'achat d'un produit est un classique de l'assurance affinitaire : elle est embarquée dans le parcours d'achat.",
+    difficulty: "facile"
+  },
+  {
+    id: 3,
+    question: "Quel est le principal avantage de l'assurance affinitaire pour le consommateur ?",
+    options: [
+      "Des tarifs toujours plus bas que la concurrence",
+      "Une souscription simple, rapide et contextuelle, sans démarche séparée",
+      "Une couverture illimitée dans le temps",
+      "L'absence totale de franchise"
+    ],
+    correctIndex: 1,
+    explanation: "L'atout majeur est la fluidité : le client souscrit en quelques clics, au moment exact où le besoin est identifié, sans quitter son parcours d'achat.",
+    difficulty: "facile"
+  },
+  {
+    id: 4,
+    question: "Quel autre nom donne-t-on souvent à l'assurance affinitaire dans le monde anglo-saxon ?",
+    options: [
+      "Bancassurance",
+      "Embedded insurance",
+      "Micro-insurance",
+      "Assurance paramétrique"
+    ],
+    correctIndex: 1,
+    explanation: "Le terme « embedded insurance » (assurance embarquée) est le standard international. On parle aussi parfois d'« embedded protection » ou d'« insurance-as-a-service ».",
+    difficulty: "facile"
+  },
+  {
+    id: 5,
+    question: "Parmi ces acteurs, lequel est un exemple typique de partenaire affinitaire ?",
+    options: [
+      "Un cabinet de courtage traditionnel",
+      "Une compagnie aérienne proposant une assurance annulation au moment de la réservation",
+      "L'ACPR",
+      "Un fonds d'investissement"
+    ],
+    correctIndex: 1,
+    explanation: "Les compagnies aériennes, les agences de voyage en ligne, les e-commerçants ou les opérateurs télécoms sont les partenaires affinitaires les plus courants.",
+    difficulty: "facile"
+  },
+
+  // ─── Niveau moyen ───
+  {
+    id: 6,
+    question: "Dans le modèle affinitaire, qui est généralement le « distributeur » du contrat ?",
+    options: [
+      "L'assureur directement",
+      "La banque du client",
+      "Le partenaire commercial (ex : e-commerçant, compagnie aérienne, opérateur télécom)",
+      "Un courtier indépendant"
+    ],
+    correctIndex: 2,
+    explanation: "Le partenaire commercial (appelé « affinity partner » ou « distributeur ») intègre l'offre d'assurance dans son parcours client et perçoit souvent une commission.",
+    difficulty: "moyen"
+  },
+  {
+    id: 7,
+    question: "Quel acteur régule l'assurance affinitaire en France ?",
+    options: [
+      "L'AMF (Autorité des Marchés Financiers)",
+      "L'ACPR (Autorité de Contrôle Prudentiel et de Résolution)",
+      "La CNIL",
+      "L'ARCEP"
+    ],
+    correctIndex: 1,
+    explanation: "L'ACPR, adossée à la Banque de France, supervise les activités d'assurance, y compris la distribution par des partenaires non-assureurs (intermédiation en assurance).",
+    difficulty: "moyen"
+  },
+  {
+    id: 8,
+    question: "Depuis la réglementation DDA (Distribution d'Assurance), que doit fournir le distributeur affinitaire au client ?",
+    options: [
+      "Uniquement un numéro de contrat",
+      "Le Document d'Information sur le Produit d'Assurance (DIP) et un devoir de conseil adapté",
+      "Un devis signé par un actuaire",
+      "Rien, la souscription en ligne suffit"
+    ],
+    correctIndex: 1,
+    explanation: "La directive DDA impose la remise du DIP (Document d'Information sur le Produit d'assurance) et un devoir de conseil, même dans un parcours digitalisé.",
+    difficulty: "moyen"
+  },
+  {
+    id: 9,
+    question: "L'assurance affinitaire est-elle le segment qui croît le plus vite dans l'assurance dommages ?",
+    options: [
+      "Non, c'est l'assurance cyber",
+      "Oui, portée par la digitalisation et l'approche API-first des assureurs",
+      "Non, c'est en déclin depuis 2020",
+      "Uniquement en Asie"
+    ],
+    correctIndex: 1,
+    explanation: "L'embedded insurance est le segment à plus forte croissance, avec des projections de plusieurs centaines de milliards de dollars de primes d'ici 2030.",
+    difficulty: "moyen"
+  },
+  {
+    id: 10,
+    question: "Dans une API d'assurance affinitaire, que signifie généralement le terme « white-label » ?",
+    options: [
+      "L'assurance est vendue sous la marque de l'assureur uniquement",
+      "L'expérience d'assurance est intégrée sous la marque du partenaire, l'assureur restant en arrière-plan",
+      "Le contrat est offert gratuitement au client",
+      "L'API ne fonctionne que sur un fond d'écran blanc"
+    ],
+    correctIndex: 1,
+    explanation: "Le white-label permet au partenaire (ex : une appli de VTC, un site e-commerce) de proposer l'assurance sous sa propre marque, le client ne voyant pas forcément le nom de l'assureur.",
+    difficulty: "moyen"
+  },
+  {
+    id: 11,
+    question: "Qu'est-ce que l'assurance paramétrique, souvent associée au modèle affinitaire ?",
+    options: [
+      "Une assurance dont l'indemnisation est déclenchée automatiquement par un événement mesurable (ex : retard de vol, séisme)",
+      "Une assurance dont le prix varie selon les paramètres boursiers",
+      "Une assurance qui couvre les paramètres informatiques d'un serveur",
+      "Un type d'assurance réservé aux paramètres de confidentialité"
+    ],
+    correctIndex: 0,
+    explanation: "L'assurance paramétrique (ou « index-based ») indemnise sans expertise de sinistre, sur la base d'un indice objectif (ex : un vol annulé = remboursement automatique). Parfaitement adaptée au parcours digital affinitaire.",
+    difficulty: "moyen"
+  },
+  {
+    id: 12,
+    question: "Quel est le modèle économique dominant des insurtechs qui fournissent des APIs d'assurance affinitaire ?",
+    options: [
+      "Vente de licences logicielles annuelles uniquement",
+      "Commission sur prime + frais d'API (SaaS / usage-based)",
+      "Revenus publicitaires uniquement",
+      "Subventions publiques européennes"
+    ],
+    correctIndex: 1,
+    explanation: "Les insurtechs B2B2C (ex : Lemonade, ZhongAn, Openly) combinent une commission sur les primes et/ou des frais d'API à l'usage, parfois complétés par des revenus SaaS.",
+    difficulty: "moyen"
+  },
+  {
+    id: 13,
+    question: "Quelle garantie est LE produit affinitaire le plus vendu au monde ?",
+    options: [
+      "L'assurance emprunteur",
+      "La garantie prolongée / assurance casse & vol sur produits électroniques (téléphones, etc.)",
+      "L'assurance annulation voyage",
+      "L'assurance animaux domestiques"
+    ],
+    correctIndex: 1,
+    explanation: "La garantie « casse & vol » des smartphones et appareils électroniques est le produit affinitaire le plus massivement distribué, souvent avec des taux de pénétration très élevés.",
+    difficulty: "moyen"
+  },
+  {
+    id: 14,
+    question: "Dans le jargon affinitaire, que désigne un « MGA » (Managing General Agent) ?",
+    options: [
+      "Un intermédiaire habilité à souscrire, tarifer et gérer des contrats pour le compte d'un assureur",
+      "Un type de sinistre informatique",
+      "Une taxe sur les contrats d'assurance",
+      "Un algorithme de scoring client"
+    ],
+    correctIndex: 0,
+    explanation: "Le MGA (Managing General Agent / Mandataire Général) est un acteur clé de l'embedded insurance : il porte le risque technique, gère la souscription et les sinistres pour le compte de l'assureur, souvent via des APIs.",
+    difficulty: "moyen"
+  },
+  {
+    id: 15,
+    question: "Quel canal digital a le plus accéléré le développement de l'assurance affinitaire ?",
+    options: [
+      "Le fax",
+      "Le smartphone / mobile-first (applications et parcours in-app)",
+      "Le minitel",
+      "La télévision interactive"
+    ],
+    correctIndex: 1,
+    explanation: "Le mobile a été le catalyseur : souscrire une assurance en 3 taps depuis son téléphone, au moment de l'achat ou de l'utilisation, a rendu le modèle viral.",
+    difficulty: "moyen"
+  },
+
+  // ─── Niveau difficile ───
+  {
+    id: 16,
+    question: "Quel est le taux de commission typique perçu par un partenaire affinitaire ?",
+    options: [
+      "0 % à 2 %",
+      "5 % à 15 %",
+      "20 % à 50 %",
+      "Plus de 70 %"
+    ],
+    correctIndex: 2,
+    explanation: "Les commissions en assurance affinitaire sont souvent élevées (20-50 %), ce qui explique l'attrait du modèle pour les partenaires commerciaux, mais peut poser question sur la valeur pour le client.",
+    difficulty: "difficile"
+  },
+  {
+    id: 17,
+    question: "Quel risque réglementaire est particulièrement surveillé dans l'assurance affinitaire ?",
+    options: [
+      "Le risque de change",
+      "La vente liée abusive (obligation d'acheter l'assurance pour obtenir le produit)",
+      "Le risque de taux d'intérêt",
+      "Le risque de matières premières"
+    ],
+    correctIndex: 1,
+    explanation: "La vente liée est un abus fréquent : imposer une assurance comme condition d'achat d'un produit est interdit. Le régulateur veille à ce que le choix reste libre.",
+    difficulty: "difficile"
+  },
+  {
+    id: 18,
+    question: "Quel est le principal frein à la qualité de l'expérience client dans l'assurance affinitaire ?",
+    options: [
+      "L'impossibilité technique de souscrire en ligne",
+      "La gestion des sinistres souvent opaque et déléguée au partenaire, créant une expérience fragmentée",
+      "L'absence totale de produits d'assurance adaptés",
+      "Le manque de moyens de paiement en ligne"
+    ],
+    correctIndex: 1,
+    explanation: "La gestion des sinistres est le point noir du modèle : le client ne sait pas toujours à qui s'adresser (partenaire ? assureur ?), ce qui dégrade la confiance et la satisfaction.",
+    difficulty: "difficile"
+  },
+  {
+    id: 19,
+    question: "Quelle taille de marché mondial est projetée pour l'embedded insurance d'ici 2030 ?",
+    options: [
+      "~1 milliard de dollars de primes",
+      "~10 milliards de dollars de primes",
+      "Plusieurs centaines de milliards de dollars de primes (voire > 700 Md$)",
+      "Le marché va disparaître"
+    ],
+    correctIndex: 2,
+    explanation: "Les projections (McKinsey, Munich Re, etc.) tablent sur un marché de l'embedded insurance dépassant les 700 milliards de dollars de primes d'ici 2030, soit une multiplication par 5 à 10 par rapport à 2020.",
+    difficulty: "difficile"
+  },
+  {
+    id: 20,
+    question: "Dans le modèle « insurance-as-a-service » (IaaS), quel est le rôle de l'orchestrateur ?",
+    options: [
+      "Un vendeur d'instruments financiers dérivés",
+      "Une plateforme qui connecte plusieurs assureurs/produits et route le client vers la meilleure offre en temps réel",
+      "Un comparatif de prix uniquement",
+      "Un organisme de régulation européen"
+    ],
+    correctIndex: 1,
+    explanation: "L'orchestrateur (ex : Openly, Insurify, Zelros) est une couche tech qui agrège plusieurs assureurs, compare les offres, personnalise et distribue l'assurance au bon moment dans le parcours client.",
+    difficulty: "difficile"
+  },
+  {
+    id: 21,
+    question: "Quel est le concept d'« usage-based insurance » (UBI) souvent embarqué dans les apps affinitaires ?",
+    options: [
+      "L'assurance dont la prime est calculée en fonction de l'utilisation réelle (ex : kilomètres parcourus, comportement de conduite)",
+      "Une assurance qui ne couvre que les biens d'occasion",
+      "Un contrat à durée indéterminée sans engagement",
+      "Une assurance réservée aux objets connectés uniquement"
+    ],
+    correctIndex: 0,
+    explanation: "L'UBI (pay-how-you-drive, pay-per-km) utilise les données télématiques pour ajuster la prime en temps réel. Embarquée dans une app de mobilité ou d'assurance auto, elle illustre parfaitement la logique affinitaire + data.",
+    difficulty: "difficile"
+  },
+  {
+    id: 22,
+    question: "Quel défi majeur les assureurs traditionnels rencontrent-ils face aux insurtechs affinitaires ?",
+    options: [
+      "Elles n'ont pas de capital suffisant",
+      "Leur SI legacy et leur time-to-market trop long ne permettent pas une intégration API rapide dans les parcours partenaires",
+      "Elles sont interdites de vendre en ligne",
+      "Elles manquent de produits d'assurance"
+    ],
+    correctIndex: 1,
+    explanation: "Les systèmes legacy des assureurs historiques (souvent monolithiques, en COBOL ou Java vieillissant) les empêchent de répondre aux exigences d'APIs temps réel, de souscription instantanée et de scalabilité des partenaires digitaux.",
+    difficulty: "difficile"
+  },
+  {
+    id: 23,
+    question: "Dans le contexte RGPD, quel enjeu spécifique pose la collecte de données dans un parcours affinitaire ?",
+    options: [
+      "Aucun, les données ne sont pas personnelles",
+      "Le consentement doit être granulaire et le partage de données entre le partenaire et l'assureur strictement encadré",
+      "Les données doivent être stockées hors UE obligatoirement",
+      "Le RGPD ne s'applique pas aux assurances"
+    ],
+    correctIndex: 1,
+    explanation: "Le RGPD impose un consentement éclairé et granulaire. Le partage de données entre partenaire commercial (qui collecte) et assureur (qui traite) doit reposer sur une base légale solide et transparente pour le client.",
+    difficulty: "difficile"
+  },
+  {
+    id: 24,
+    question: "Quel est le concept de « embedded finance » et son lien avec l'assurance affinitaire ?",
+    options: [
+      "C'est la même chose, deux synonymes exacts",
+      "L'embedded finance englobe tous les services financiers (crédit, paiement, assurance) intégrés dans des parcours non-financiers — l'assurance en est une composante",
+      "L'embedded finance ne concerne que les cryptomonnaies",
+      "L'assurance affinitaire est un sous-ensemble de l'embedded finance, centré sur la protection/assurance"
+    ],
+    correctIndex: 1,
+    explanation: "L'embedded finance est le terme chapeau (paiement, crédit, assurance, investissement intégrés dans des parcours non-financiers). L'embedded insurance en est la branche dédiée à l'assurance. Les deux relèvent de la même logique d'intégration contextuelle.",
+    difficulty: "difficile"
+  },
+  {
+    id: 25,
+    question: "Quelle tendance majeure transforme le rôle du partenaire affinitaire, du simple « apporteur d'affaires » vers un acteur plus engagé ?",
+    options: [
+      "Le partenaire devient lui-même porteur de risque via des cellules de captive ou des MGA",
+      "Le partenaire arrête complètement de vendre des assurances",
+      "Le partenaire ne touche plus aucune commission",
+      "Le partenaire externalise toute la relation client à l'assureur"
+    ],
+    correctIndex: 0,
+    explanation: "De plus en plus de partenaires (grandes plateformes, OEM) montent en compétence : cellules captives, licences de MGA, gestion déléguée des sinistres. Ils passent de simples distributeurs à des acteurs à part entière de la chaîne de valeur assurantielle.",
+    difficulty: "difficile"
+  },
+
+  // ─── Acteurs du marché français ───
+  {
+    id: 26,
+    question: "Quel est le positionnement de Seyna sur le marché français de l'assurance affinitaire ?",
+    options: [
+      "Courtier en ligne grand public",
+      "Assureur porteur de risque fournissant une infrastructure API aux courtiers et insurtechs (modèle « assureur des courtiers »)",
+      "Réassureur exclusivement",
+      "Comparateur de prix d'assurance"
+    ],
+    correctIndex: 1,
+    explanation: "Seyna est un assureur tech qui porte le risque et fournit sa plateforme API à des courtiers comme Dalma, Garantme, Verspieren ou Phenomen. En 2025, Seyna a dépassé 142 M€ de primes.",
+    difficulty: "moyen"
+  },
+  {
+    id: 27,
+    question: "Parmi ces acteurs français, lesquels sont des clients/porteurs de risque de Seyna ?",
+    options: [
+      "Axa et Groupama uniquement",
+      "Dalma, Garantme, Phenomen et Verspieren",
+      "Luko et Lemonade",
+      "Aucun, Seyna opère en direct uniquement"
+    ],
+    correctIndex: 1,
+    explanation: "Seyna porte le risque pour plusieurs courtiers/insurtechs français : Dalma (assurance animaux), Garantme (caution locative), Phenomen (garanties de paiement) et Verspieren (protection juridique).",
+    difficulty: "moyen"
+  },
+  {
+    id: 28,
+    question: "Wakam (anciennement La Parisienne Assurances) est un assureur français fondé en… ?",
+    options: [
+      "1995",
+      "1829",
+      "2015",
+      "1972"
+    ],
+    correctIndex: 1,
+    explanation: "Wakam est l'héritier de La Parisienne Assurances, fondée en 1829 — une compagnie bicentenaire qui s'est complètement réinventée en insurtech B2B2C spécialisée dans l'embedded insurance en marque blanche.",
+    difficulty: "moyen"
+  },
+  {
+    id: 29,
+    question: "Quel est le modèle économique principal de Wakam aujourd'hui ?",
+    options: [
+      "Assureur direct B2C uniquement sur l'assurance auto",
+      "Plateforme B2B2C d'embedded insurance en marque blanche, distribuée via 100+ partenaires dans 30+ pays",
+      "Courtier grossiste traditionnel",
+      "Réassureur de proximité"
+    ],
+    correctIndex: 1,
+    explanation: "Wakam opère comme une plateforme d'embedded insurance en marque blanche : 836 M€ de revenus, 100+ partenaires (dont des géants du e-commerce et de la mobilité), présents dans plus de 30 pays.",
+    difficulty: "moyen"
+  },
+  {
+    id: 30,
+    question: "Quel lien existe entre Luko et Wakam ?",
+    options: [
+      "Ce sont deux concurrents directs indépendants",
+      "Luko est la marque B2C d'assurance habitation lancée par Wakam pour le grand public",
+      "Luko est un réassureur de Wakam",
+      "Luko a racheté Wakam en 2023"
+    ],
+    correctIndex: 1,
+    explanation: "Luko (devenu Oppens) est la marque consumer lancée par Wakam pour vendre de l'assurance habitation en direct. Wakam reste la plateforme B2B derrière, adossée à des réassureurs comme Munich Re et Swiss Re.",
+    difficulty: "moyen"
+  },
+  {
+    id: 31,
+    question: "Garantme est principalement connu pour quel produit d'assurance affinitaire ?",
+    options: [
+      "L'assurance voyage à la journée",
+      "La caution locative (garantie contre les loyers impayés) pour les agences immobilières et les locataires",
+      "L'assurance scolaire",
+      "La garantie décennale"
+    ],
+    correctIndex: 1,
+    explanation: "Garantme est le leader français de la caution locative : le locataire sans garant physique peut obtenir une caution certifiée en 8h, qui couvre le propriétaire en cas d'impayé. C'est un produit d'assurance affinitaire embarqué dans le parcours locatif.",
+    difficulty: "facile"
+  },
+  {
+    id: 32,
+    question: "Quel est le statut réglementaire de Garantme ?",
+    options: [
+      "Assureur agréé ACPR",
+      "Courtier en assurance immatriculé à l'ORIAS",
+      "Réassureur",
+      "Organisme de régulation"
+    ],
+    correctIndex: 1,
+    explanation: "Garantme est un courtier en assurance (ORIAS n° 17006810), pas un assureur. Le risque est porté par des assureurs partenaires comme Seyna. C'est un modèle classique de l'embedded insurance : le courtier distribue, l'assureur porte.",
+    difficulty: "moyen"
+  },
+  {
+    id: 33,
+    question: "Dalma est une insurtech française spécialisée dans… ?",
+    options: [
+      "L'assurance emprunteur",
+      "La mutuelle santé pour chiens et chats, 100 % digitale",
+      "L'assurance habitation en colocation",
+      "L'assurance cyber pour PME"
+    ],
+    correctIndex: 1,
+    explanation: "Dalma (marque d'Ollie, courtier ORIAS) propose une assurance santé animale 100 % digitale : souscription en 2 min, remboursement en 48h, sans franchise. Le risque est porté par Seyna et Axeria.",
+    difficulty: "facile"
+  },
+  {
+    id: 34,
+    question: "Quel est le modèle économique de Dalma ?",
+    options: [
+      "Assureur direct agréé ACPR portant le risque en propre",
+      "Courtier / Agent Général d'Assurance (AGA) : conçoit et distribue le produit, le risque étant porté par des assureurs partenaires (Seyna, Axeria)",
+      "Réassureur régional",
+      "Plateforme de comparaison uniquement"
+    ],
+    correctIndex: 1,
+    explanation: "Dalma opère comme Agent Général d'Assurance (AGA) : elle gère la conception produit, la distribution, la relation client et les sinistres, tandis que le risque assurantiel est porté par Seyna et Axeria. Même modèle que Luko ou Alan.",
+    difficulty: "moyen"
+  },
+  {
+    id: 35,
+    question: "Quel rôle joue Hannover Re (réassureur allemand, n°3 mondial) dans l'écosystème de l'embedded insurance ?",
+    options: [
+      "Il ne s'intéresse qu'à la réassurance traditionnelle de catastrophes naturelles",
+      "Il fournit de la capacité de réassurance aux insurtechs et a lancé « hr | equarium », une plateforme connectant insurtechs et assureurs",
+      "Il est exclusively un concurrent des insurtechs françaises",
+      "Il ne réassure que les risques agricoles"
+    ],
+    correctIndex: 1,
+    explanation: "Hannover Re a une division dédiée aux insurtechs et a lancé « hr | equarium », une plateforme d'innovation qui connecte insurtechs, assureurs et partenaires B2C. Le réassureur apporte sa solidité financière et sa capacité de risque aux nouveaux modèles digitaux.",
+    difficulty: "difficile"
+  },
+  {
+    id: 36,
+    question: "Dans l'écosystème français de l'assurance affinitaire, quelle chaîne de valeur relie Seyna, Garantme et Phenomen ?",
+    options: [
+      "Seyna est le réassureur de Garantme et Phenomen",
+      "Garantme et Phenomen sont des courtiers/distributeurs, Seyna est l'assureur porteur de risque derrière leurs produits",
+      "Seyna, Garantme et Phenomen sont trois filiales du même groupe",
+      "Il n'y a aucun lien, ce sont trois acteurs indépendants sans relation"
+    ],
+    correctIndex: 1,
+    explanation: "C'est un écosystème B2B2C typique : Seyna (assureur tech, porteur de risque) fournit son infrastructure à des courtiers comme Garantme (caution locative) et Phenomen (garanties de paiement). Les courtiers distribuent, Seyna porte le risque.",
+    difficulty: "difficile"
+  }
+];
+
+const DIFFICULTY_LABELS = {
+  facile: { label: "Facile", color: "#22c55e", icon: "🌱" },
+  moyen: { label: "Moyen", color: "#f59e0b", icon: "⚡" },
+  difficile: { label: "Difficile", color: "#ef4444", icon: "🔥" }
+};
+
+
+
+// ─── State ───
+let phase = "welcome";
+let currentIndex = 0;
+let selectedOption = null;
+let showExplanation = false;
+let score = 0;
+let shuffledQuestions = [];
+
+const LETTERS = ["A", "B", "C", "D"];
+
+function getResultData(score, total) {
+  const pct = (score / total) * 100;
+  if (pct === 100) return { emoji: "🏆", title: "Expert affinitaire !", message: "Score parfait — vous maîtrisez l'embedded insurance sur le bout des doigts.", color: "#22c55e" };
+  if (pct >= 80) return { emoji: "🌟", title: "Très bon score !", message: "Vous avez une solide culture de l'assurance affinitaire. Quelques subtilités vous échappent encore.", color: "#6366f1" };
+  if (pct >= 60) return { emoji: "👍", title: "Bien joué !", message: "Vous connaissez les bases. Encore quelques questions pour devenir incollable.", color: "#f59e0b" };
+  if (pct >= 40) return { emoji: "📚", title: "Pas mal, mais…", message: "Les fondamentaux sont là, mais il y a de la marge de progression. Relancez-vous !", color: "#f97316" };
+  return { emoji: "🤔", title: "À revoir !", message: "L'assurance affinitaire recèle pas mal de subtilités. Une deuxième tentative s'impose.", color: "#ef4444" };
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  shuffledQuestions = shuffle(QUESTIONS);
+  phase = "playing";
+  currentIndex = 0;
+  selectedOption = null;
+  showExplanation = false;
+  score = 0;
+  render();
+}
+
+function handleSelectOption(idx) {
+  if (selectedOption !== null) return;
+  selectedOption = idx;
+  const q = shuffledQuestions[currentIndex];
+  if (idx === q.correctIndex) score++;
+  showExplanation = true;
+  render();
+}
+
+function handleNext() {
+  if (currentIndex + 1 >= shuffledQuestions.length) {
+    phase = "result";
+  } else {
+    currentIndex++;
+    selectedOption = null;
+    showExplanation = false;
+  }
+  render();
+}
+
+function restart() {
+  phase = "welcome";
+  render();
+}
+
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function render() {
+  const root = document.getElementById("root");
+  
+  if (phase === "welcome") {
+    root.innerHTML = `
+      <div class="quiz-container">
+        <div class="welcome-screen">
+          <div class="welcome-icon">🛡️</div>
+          <h1>Quizz — L'assurance<br>affinitaire</h1>
+          <p>Testez vos connaissances sur l'embedded insurance : le modèle qui intègre l'assurance directement dans le parcours d'achat d'un produit ou service.</p>
+          <div class="difficulty-badges">
+            <span class="diff-badge" style="color:#22c55e;border-color:#22c55e44;background:#22c55e11">🌱 Facile</span>
+            <span class="diff-badge" style="color:#f59e0b;border-color:#f59e0b44;background:#f59e0b11">⚡ Moyen</span>
+            <span class="diff-badge" style="color:#ef4444;border-color:#ef444444;background:#ef444411">🔥 Difficile</span>
+          </div>
+          <p style="font-size:0.85rem;color:#64748b">${QUESTIONS.length} questions · ~${Math.ceil(QUESTIONS.length * 0.35)} minutes</p>
+          <button class="start-btn" id="start-btn">▶ Lancer le quizz</button>
+        </div>
+      </div>`;
+    document.getElementById("start-btn").addEventListener("click", startQuiz);
+    return;
+  }
+  
+  if (phase === "result") {
+    const total = shuffledQuestions.length;
+    const result = getResultData(score, total);
+    const wrongCount = total - score;
+    root.innerHTML = `
+      <div class="quiz-container">
+        <div class="result-screen">
+          <div class="result-emoji">${result.emoji}</div>
+          <h2>${result.title}</h2>
+          <div class="score-circle" style="border-color:${result.color};box-shadow:0 0 40px ${result.color}33">
+            <span class="score-num" style="color:${result.color}">${score}</span>
+            <span class="score-denom" style="color:${result.color}">/ ${total}</span>
+          </div>
+          <p class="result-message">${result.message}</p>
+          <div class="result-details">
+            <div class="result-stat"><div class="stat-num" style="color:#22c55e">${score}</div><div class="stat-label">Correctes</div></div>
+            <div class="result-stat"><div class="stat-num" style="color:#ef4444">${wrongCount}</div><div class="stat-label">Incorrectes</div></div>
+            <div class="result-stat"><div class="stat-num" style="color:#818cf8">${Math.round((score/total)*100)}%</div><div class="stat-label">Score</div></div>
+          </div>
+          <button class="restart-btn" id="restart-btn">🔄 Rejouer</button>
+        </div>
+      </div>`;
+    document.getElementById("restart-btn").addEventListener("click", restart);
+    return;
+  }
+  
+  // Playing phase
+  const q = shuffledQuestions[currentIndex];
+  const total = shuffledQuestions.length;
+  const progress = ((currentIndex + (showExplanation ? 1 : 0)) / total) * 100;
+  const diff = DIFFICULTY_LABELS[q.difficulty];
+  
+  let optionsHtml = q.options.map((opt, idx) => {
+    let cls = "option-btn";
+    if (selectedOption !== null) {
+      if (idx === q.correctIndex) cls += " selected-correct";
+      else if (idx === selectedOption) cls += " selected-wrong";
+    }
+    return `<button class="${cls}" data-idx="${idx}" ${selectedOption !== null ? "disabled" : ""}>
+      <span class="option-letter">${LETTERS[idx]}</span>${esc(opt)}
+    </button>`;
+  }).join("");
+  
+  let explanationHtml = "";
+  if (showExplanation) {
+    explanationHtml = `<div class="explanation-box"><div class="expl-label">💡 Explication</div><p>${esc(q.explanation)}</p></div>`;
+  }
+  
+  let nextHtml = "";
+  if (showExplanation) {
+    nextHtml = `<button class="next-btn" id="next-btn">${currentIndex + 1 >= total ? "Voir les résultats →" : "Question suivante →"}</button>`;
+  }
+  
+  root.innerHTML = `
+    <div class="quiz-container">
+      <div class="progress-bar-wrap">
+        <div class="progress-info">
+          <span>Question ${currentIndex + 1} / ${total}</span>
+          <span>Score : ${score}</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" style="width:${progress}%"></div></div>
+      </div>
+      <div class="question-card">
+        <div class="question-header">
+          <span class="q-number">Q${currentIndex + 1}</span>
+          <span class="q-difficulty" style="color:${diff.color};border-color:${diff.color}55;background:${diff.color}14">${diff.icon} ${diff.label}</span>
+        </div>
+        <p class="question-text">${esc(q.question)}</p>
+        <div class="options-list">${optionsHtml}</div>
+        ${explanationHtml}
+        ${nextHtml}
+      </div>
+    </div>`;
+  
+  // Wire up option buttons
+  if (selectedOption === null) {
+    document.querySelectorAll(".option-btn").forEach(btn => {
+      btn.addEventListener("click", () => handleSelectOption(parseInt(btn.dataset.idx)));
+    });
+  }
+  
+  if (showExplanation) {
+    document.getElementById("next-btn").addEventListener("click", handleNext);
+  }
+}
+
+// Initial render
+render();
+
+</script>
+</body>
+</html>
