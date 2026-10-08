@@ -36,7 +36,7 @@ body {
   align-items: center;
   justify-content: center;
   text-align: center;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 .welcome-icon {
@@ -66,22 +66,66 @@ body {
   line-height: 1.6;
 }
 
-.difficulty-badges {
+/* === Boîte de configuration === */
+.setup-box {
+  width: 100%;
+  max-width: 440px;
   display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: column;
+  gap: 1.25rem;
+  text-align: left;
+  padding: 1.5rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  backdrop-filter: blur(12px);
 }
 
-.diff-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.4rem 0.9rem;
-  border-radius: 999px;
+.setup-label {
   font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #818cf8;
+  margin-bottom: 0.6rem;
+  display: block;
+}
+
+.choice-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.choice-btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  border: 1px solid;
+  font-family: inherit;
+  color: #cbd5e1;
+  background: rgba(255,255,255,0.04);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.choice-btn:hover:not(:disabled) {
+  border-color: #6366f1;
+  background: rgba(99,102,241,0.08);
+  color: #e2e8f0;
+}
+
+.choice-btn.selected {
+  border-color: #6366f1;
+  background: rgba(99,102,241,0.15);
+  color: #c7d2fe;
+  box-shadow: 0 0 12px rgba(99,102,241,0.25);
+}
+
+.choice-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
 }
 
 .start-btn {
@@ -896,7 +940,14 @@ const DIFFICULTY_LABELS = {
   difficile: { label: "Difficile", color: "#ef4444", icon: "🔥" }
 };
 
+const DIFF_CHOICES = [
+  { value: "tous", label: "🎲 Tous niveaux" },
+  { value: "facile", label: "🌱 Facile" },
+  { value: "moyen", label: "⚡ Moyen" },
+  { value: "difficile", label: "🔥 Difficile" }
+];
 
+const COUNT_CHOICES = [5, 10, 15, 0]; // 0 = toutes les questions
 
 // ─── State ───
 let phase = "welcome";
@@ -905,8 +956,16 @@ let selectedOption = null;
 let showExplanation = false;
 let score = 0;
 let shuffledQuestions = [];
+let selectedDifficulty = "tous";
+let selectedCount = 0; // 0 = toutes
 
 const LETTERS = ["A", "B", "C", "D"];
+
+function availableQuestions() {
+  return selectedDifficulty === "tous"
+    ? QUESTIONS
+    : QUESTIONS.filter(q => q.difficulty === selectedDifficulty);
+}
 
 function getResultData(score, total) {
   const pct = (score / total) * 100;
@@ -927,12 +986,26 @@ function shuffle(arr) {
 }
 
 function startQuiz() {
-  shuffledQuestions = shuffle(QUESTIONS);
+  const pool = shuffle(availableQuestions());
+  shuffledQuestions = (selectedCount > 0) ? pool.slice(0, selectedCount) : pool;
+  if (shuffledQuestions.length === 0) return;
   phase = "playing";
   currentIndex = 0;
   selectedOption = null;
   showExplanation = false;
   score = 0;
+  render();
+}
+
+function handleSelectDifficulty(value) {
+  selectedDifficulty = value;
+  const avail = availableQuestions().length;
+  if (selectedCount > avail) selectedCount = 0;
+  render();
+}
+
+function handleSelectCount(value) {
+  selectedCount = value;
   render();
 }
 
@@ -969,21 +1042,50 @@ function render() {
   const root = document.getElementById("root");
   
   if (phase === "welcome") {
+    const avail = availableQuestions().length;
+    const finalCount = (selectedCount > 0) ? Math.min(selectedCount, avail) : avail;
+    
+    const diffBtns = DIFF_CHOICES.map(d => {
+      const sel = selectedDifficulty === d.value ? "selected" : "";
+      const n = d.value === "tous" ? QUESTIONS.length : QUESTIONS.filter(q => q.difficulty === d.value).length;
+      return `<button class="choice-btn ${sel}" data-diff="${d.value}">${d.label} <small style="opacity:0.6">(${n})</small></button>`;
+    }).join("");
+    
+    const countBtns = COUNT_CHOICES.map(n => {
+      const value = n;
+      const label = n === 0 ? `Toutes (${avail})` : String(n);
+      const disabled = n > avail ? "disabled" : "";
+      const sel = selectedCount === value ? "selected" : "";
+      return `<button class="choice-btn ${sel}" data-count="${value}" ${disabled}>${label}</button>`;
+    }).join("");
+    
     root.innerHTML = `
       <div class="quiz-container">
         <div class="welcome-screen">
           <div class="welcome-icon">🛡️</div>
           <h1>Quizz — L'assurance<br>affinitaire</h1>
           <p>Testez vos connaissances sur l'embedded insurance : le modèle qui intègre l'assurance directement dans le parcours d'achat d'un produit ou service.</p>
-          <div class="difficulty-badges">
-            <span class="diff-badge" style="color:#22c55e;border-color:#22c55e44;background:#22c55e11">🌱 Facile</span>
-            <span class="diff-badge" style="color:#f59e0b;border-color:#f59e0b44;background:#f59e0b11">⚡ Moyen</span>
-            <span class="diff-badge" style="color:#ef4444;border-color:#ef444444;background:#ef444411">🔥 Difficile</span>
+          <div class="setup-box">
+            <div class="setup-section">
+              <span class="setup-label">🎯 Niveau</span>
+              <div class="choice-row">${diffBtns}</div>
+            </div>
+            <div class="setup-section">
+              <span class="setup-label">🔢 Nombre de questions</span>
+              <div class="choice-row">${countBtns}</div>
+            </div>
           </div>
-          <p style="font-size:0.85rem;color:#64748b">${QUESTIONS.length} questions · ~${Math.ceil(QUESTIONS.length * 0.35)} minutes</p>
+          <p style="font-size:0.85rem;color:#64748b">${finalCount} question${finalCount > 1 ? "s" : ""} · ~${Math.max(1, Math.ceil(finalCount * 0.35))} minute${finalCount * 0.35 > 1 ? "s" : ""}</p>
           <button class="start-btn" id="start-btn">▶ Lancer le quizz</button>
         </div>
       </div>`;
+    
+    document.querySelectorAll(".choice-btn[data-diff]").forEach(btn => {
+      btn.addEventListener("click", () => handleSelectDifficulty(btn.dataset.diff));
+    });
+    document.querySelectorAll(".choice-btn[data-count]").forEach(btn => {
+      btn.addEventListener("click", () => handleSelectCount(parseInt(btn.dataset.count)));
+    });
     document.getElementById("start-btn").addEventListener("click", startQuiz);
     return;
   }
