@@ -933,6 +933,268 @@ const QUESTIONS = [
     correctIndex: 1,
     explanation: "C'est un écosystème B2B2C typique : Seyna (assureur tech, porteur de risque) fournit son infrastructure à des courtiers comme Garantme (caution locative) et Phenomen (garanties de paiement). Les courtiers distribuent, Seyna porte le risque.",
     difficulty: "difficile"
+  },
+
+  // ─── Cas d'usage et mécaniques du modèle ───
+  {
+    id: 37,
+    question: "Au moment de réserver un billet de train ou d'avion en ligne, quelle offre affinitaire vous est le plus souvent proposée ?",
+    options: [
+      "Une assurance annulation / assistance voyage",
+      "Une assurance vie",
+      "Une assurance auto au tiers",
+      "Une garantie décennale"
+    ],
+    correctIndex: 0,
+    explanation: "L'assurance annulation et assistance embarquée dans le tunnel de réservation est l'exemple le plus répandu d'embedded insurance : elle couvre le risque exact du moment (le voyage que l'on est en train d'acheter).",
+    difficulty: "facile"
+  },
+  {
+    id: 38,
+    question: "Sur un site e-commerce, quelle protection affinitaire apparaît le plus souvent au moment du paiement ?",
+    options: [
+      "La garantie casse, vol ou livraison du produit acheté",
+      "Une assurance responsabilité civile",
+      "Une mutuelle santé familiale",
+      "Une assurance de prêt immobilier"
+    ],
+    correctIndex: 0,
+    explanation: "Au checkout, les e-commerçants proposent fréquemment une protection liée à l'article acheté : casse, vol, panne, ou remboursement en cas de problème de livraison. C'est le cœur du modèle affinitaire.",
+    difficulty: "facile"
+  },
+  {
+    id: 39,
+    question: "Dans les plateformes de location courte durée (type Airbnb ou Booking), quel type de garantie embarquée protège les hôtes ?",
+    options: [
+      "Une garantie contre les dommages causés par les voyageurs",
+      "Une assurance scolaire",
+      "Une assurance bateau",
+      "Une assurance de frais funéraires"
+    ],
+    correctIndex: 0,
+    explanation: "Les plateformes de location courte durée intègrent des programmes de protection des hôtes (dommages, annulations de dernière minute) : l'hôte est couvert sans souscrire de contrat séparé, directement dans le parcours de publication de son annonce.",
+    difficulty: "facile"
+  },
+  {
+    id: 40,
+    question: "Qu'est-ce que la distribution d'assurance « à titre accessoire » prévue par la DDA ?",
+    options: [
+      "La possibilité pour certains professionnels (ex : voyagistes, concessionnaires auto) de distribuer des assurances complémentaires à leur activité, sans être immatriculés comme intermédiaires, sous conditions strictes",
+      "Le fait de vendre une assurance en option sur un produit principal",
+      "La distribution gratuite d'un contrat d'assurance",
+      "La vente d'assurance uniquement par des acteurs non financiers"
+    ],
+    correctIndex: 0,
+    explanation: "La DDA encadre la distribution à titre accessoire : des professionnels dont l'activité principale n'est pas l'assurance peuvent distribuer certains contrats accessoires, sous conditions strictes de complémentarité avec le bien ou service vendu.",
+    difficulty: "moyen"
+  },
+  {
+    id: 41,
+    question: "Qu'est-ce que le « loss ratio » (taux de sinistralité) dans un programme affinitaire ?",
+    options: [
+      "Le rapport entre les sinistres payés et les primes encaissées",
+      "Le pourcentage de clients qui résilient leur contrat",
+      "La commission reversée au partenaire",
+      "Le taux de TVA applicable aux contrats d'assurance"
+    ],
+    correctIndex: 0,
+    explanation: "Le loss ratio mesure la rentabilité technique du portefeuille : sinistres payés ÷ primes encaissées. Un programme affinitaire sain vise un loss ratio équilibré — trop bas signifie que le client paie trop cher, trop haut que le produit est mal tarifié.",
+    difficulty: "moyen"
+  },
+  {
+    id: 42,
+    question: "Pourquoi les plateformes (marketplaces, super-apps, constructeurs) s'intéressent-elles à l'embedded insurance ?",
+    options: [
+      "Uniquement par obligation réglementaire",
+      "Comme nouvelle source de revenus à forte marge, et levier de confiance et de fidélisation de leurs utilisateurs",
+      "Parce qu'elles sont tenues de devenir assureurs",
+      "Pour réduire leurs impôts"
+    ],
+    correctIndex: 1,
+    explanation: "L'embedded insurance permet aux plateformes de monétiser leur audience (commissions élevées), tout en renforçant la confiance des utilisateurs (achat protégé) et la valeur perçue de l'écosystème. C'est un des leviers de l'embedded finance.",
+    difficulty: "moyen"
+  },
+  {
+    id: 43,
+    question: "Que mesure le « taux de conversion » (attachement) d'une offre affinitaire ?",
+    options: [
+      "Le pourcentage d'acheteurs du produit principal qui souscrivent aussi l'assurance proposée",
+      "Le nombre de sinistres déclarés par an",
+      "La vitesse de traitement des demandes de souscription",
+      "Le taux de commission reversé au partenaire"
+    ],
+    correctIndex: 0,
+    explanation: "Le taux d'attachement mesure l'efficacité commerciale de l'offre embarquée : sur 100 clients achetant le produit, combien ajoutent l'assurance. C'est LE KPI de pilotage des programmes affinitaires (avec le loss ratio).",
+    difficulty: "moyen"
+  },
+  {
+    id: 44,
+    question: "Quel rôle joue un « gestionnaire de sinistres » délégué dans un programme affinitaire ?",
+    options: [
+      "Il porte le risque à la place de l'assureur",
+      "Il instruit et indemnise les sinistres au nom de l'assureur, souvent avec des SLA stricts pour préserver l'expérience client du partenaire",
+      "Il fixe le prix des primes",
+      "Il délivre les agréments réglementaires"
+    ],
+    correctIndex: 1,
+    explanation: "Dans les programmes affinitaires, la gestion des sinistres est souvent déléguée à un spécialiste (ou au MGA lui-même), avec des engagements de qualité de service : la rapidité d'indemnisation est cruciale pour la réputation du partenaire distributeur.",
+    difficulty: "moyen"
+  },
+  {
+    id: 45,
+    question: "Qu'est-ce qu'un arrangement de « fronting » en assurance ?",
+    options: [
+      "Un assureur agréé met son agrément et sa capacité à disposition, le risque étant largement rétrocédé au partenaire via la réassurance",
+      "Un courtier qui revend des contrats d'un concurrent",
+      "Une assurance vendue devant les magasins",
+      "Un prêt entre assureurs à taux zéro"
+    ],
+    correctIndex: 0,
+    explanation: "Le fronting permet à un acteur sans agrément (insurtech, captive de marque) de distribuer des contrats « frontés » par un assureur agréé, qui rétrocède l'essentiel du risque. C'est un mécanisme courant en embedded insurance, surveillé de près par les régulateurs.",
+    difficulty: "difficile"
+  },
+  {
+    id: 46,
+    question: "Qu'est-ce qu'une « captive » d'assurance dans le contexte affinitaire ?",
+    options: [
+      "Une filiale d'assurance créée par une entreprise pour porter (une partie de) ses risques, y compris ceux liés à ses clients",
+      "Un contrat d'assurance à vie souscrit par erreur",
+      "Une assurance vendue uniquement en captivité, c'est-à-dire en agence",
+      "Une marque d'assurance réservée aux entreprises"
+    ],
+    correctIndex: 0,
+    explanation: "De grands partenaires (OEM, plateformes) créent parfois leur propre captive pour capter la marge d'assurance sur leurs clients au lieu de la laisser à un assureur externe — et la réassurent partiellement. C'est la marche suprême de la montée en compétence du distributeur.",
+    difficulty: "difficile"
+  },
+  {
+    id: 47,
+    question: "Dans un traité de réassurance « quota share », que cède l'assureur au réassureur ?",
+    options: [
+      "Un pourcentage fixe de chaque police : une part des primes ET des sinistres correspondante",
+      "Uniquement les sinistres dépassant un certain montant",
+      "Uniquement les polices anciennes",
+      "Le droit de vendre les contrats"
+    ],
+    correctIndex: 0,
+    explanation: "Le quota share cède un % fixe du portefeuille (primes et sinistres) au réassureur. C'est le traité le plus courant pour les programmes affinitaires en démarrage : il stabilise la sinistralité et libère de la capacité.",
+    difficulty: "difficile"
+  },
+  {
+    id: 48,
+    question: "Que signifie une approche « API-first » pour un assureur ?",
+    options: [
+      "Concevoir le système d'information avec des API publiques comme brique de base, pensées pour être consommées par des partenaires",
+      "Vendre uniquement via une application mobile",
+      "Publier les tarifs en ligne avant tout le monde",
+      "Automatiser uniquement la gestion des sinistres"
+    ],
+    correctIndex: 0,
+    explanation: "API-first signifie que l'assureur expose nativement ses capacités (tarification, souscription, gestion) via des API. C'est le prérequis technique de l'embedded insurance : sans API, pas d'intégration fluide dans les parcours des partenaires.",
+    difficulty: "difficile"
+  },
+  {
+    id: 49,
+    question: "Pourquoi le modèle affinitaire réduit-il fortement le coût d'acquisition client pour l'assureur ?",
+    options: [
+      "Parce que le partenaire amène le client au moment exact du besoin, sans dépense marketing de l'assureur",
+      "Parce que les assurances affinitaires sont vendues plus cher",
+      "Parce que les clients affinitaires ne déclarent jamais de sinistres",
+      "Parce que la réglementation interdit la publicité en assurance"
+    ],
+    correctIndex: 0,
+    explanation: "L'assureur traditionnel dépense beaucoup en acquisition (marketing, comparateurs, apporteurs). En affinitaire, le partenaire fournit le flux de clients au bon moment du besoin : le coût d'acquisition marginal chute, ce qui explique la capacité à payer de fortes commissions.",
+    difficulty: "difficile"
+  },
+  {
+    id: 50,
+    question: "Qu'est-ce que le « binding authority » dans un programme entre un assureur et un MGA ?",
+    options: [
+      "L'autorité de souscrire et gérer les contrats dans un cadre défini, au nom de l'assureur et sous sa responsabilité finale",
+      "L'obligation pour le MGA de réassurer chaque police",
+      "Le droit du MGA de changer les primes à tout moment",
+      "Un accord exclusif interdisant à l'assureur de travailler avec d'autres MGA"
+    ],
+    correctIndex: 0,
+    explanation: "La binding authority délègue au MGA le pouvoir de « binder » (accepter) les risques selon des règles convenues (produits, limites, tarifs). L'assureur reste porteur du risque et contrôle a posteriori. C'est la fondation contractuelle du modèle délégué.",
+    difficulty: "difficile"
+  },
+  {
+    id: 51,
+    question: "AppleCare+, la protection des appareils Apple, est un exemple de… ?",
+    options: [
+      "Un programme affinitaire distribué par une marque tech, avec des assureurs agréés en coulisse",
+      "Une assurance portée directement par Apple, qui est une compagnie d'assurance",
+      "Un service gratuit de réparation",
+      "Une garantie légale du constructeur"
+    ],
+    correctIndex: 0,
+    explanation: "AppleCare+ est un programme de protection vendu au moment de l'achat de l'appareil (et de son abonnement) : Apple distribue, mais le risque est porté par des assureurs agréés partenaires selon les pays. Un cas d'école d'embedded insurance par une marque non-assurance.",
+    difficulty: "moyen"
+  },
+  {
+    id: 52,
+    question: "Chez les constructeurs automobiles (OEM), que permet l'embedded insurance connecté ?",
+    options: [
+      "De proposer une assurance liée au véhicule et à ses données (télématique embarquée) dès l'achat ou l'abonnement",
+      "De remplacer la carte grise par une assurance",
+      "D'assurer uniquement les véhicules autonomes",
+      "De supprimer l'obligation d'assurance auto"
+    ],
+    correctIndex: 0,
+    explanation: "Les constructeurs intègrent l'assurance dans le parcours d'achat ou d'abonnement du véhicule, en s'appuyant sur les données de la voiture (télématique) pour tarifer. C'est un des segments les plus dynamiques de l'embedded insurance, surtout avec l'essor de la voiture connectée et de l'auto en abonnement.",
+    difficulty: "moyen"
+  },
+  {
+    id: 53,
+    question: "Qu'est-ce qu'un « partenaire à l'acte » dans l'écosystème de l'embedded insurance (ex : Qover) ?",
+    options: [
+      "Une plateforme d'orchestration qui connecte marques et assureurs via des API, sans être elle-même le porteur de risque",
+      "Un assureur qui vend uniquement en ligne",
+      "Un comparateur de prix grand public",
+      "Une agence de communication spécialisée en assurance"
+    ],
+    correctIndex: 0,
+    explanation: "Les orchestrateurs (comme Qover, insurtech belge, ou d'autres « insurance-as-a-service ») fournissent l'infrastructure technique pour intégrer l'assurance dans les parcours des marques : ils orchestrent, mais le risque est porté par des assureurs partenaires.",
+    difficulty: "moyen"
+  },
+  {
+    id: 54,
+    question: "Quelles données du parcours d'achat rendent possible la tarification en temps réel d'une offre affinitaire ?",
+    options: [
+      "Le type de produit, son prix, la destination ou l'usage prévu — transmis via API au moment de la proposition",
+      "Les données de santé du client collectées par le partenaire",
+      "Les opinions politiques de l'acheteur",
+      "Aucune donnée : la tarification est identique pour tous"
+    ],
+    correctIndex: 0,
+    explanation: "L'embedded insurance repose sur un échange de données contextuel : le panier (produit, montant, destination, durée) alimente une tarification instantanée via API. Attention : seules les données nécessaires au risque peuvent être utilisées, pas les données sensibles.",
+    difficulty: "moyen"
+  },
+  {
+    id: 55,
+    question: "Pourquoi les réassureurs investissent-ils massivement dans les insurtechs et l'embedded insurance ?",
+    options: [
+      "Pour accéder à de nouveaux segments de risque et de croissance, en fournissant la capacité et la solidité financière à ces modèles",
+      "Pour faire fermer les insurtechs concurrentes",
+      "Parce que la loi les y oblige",
+      "Uniquement pour des raisons d'image"
+    ],
+    correctIndex: 0,
+    explanation: "Les réassureurs (Munich Re, Swiss Re, Hannover Re, SCOR...) voient dans l'embedded insurance un relais de croissance : ils apportent capacité, expertise actuarielle et notation financière aux nouveaux distributeurs d'assurance, en échange d'un accès privilégié à ces risques.",
+    difficulty: "difficile"
+  },
+  {
+    id: 56,
+    question: "Quel risque présente le « bundled pricing » (offre groupée produit + assurance) au regard de la réglementation européenne ?",
+    options: [
+      "Le client doit pouvoir acheter le produit principal sans l'assurance, et le prix de chaque composant doit être transparent",
+      "Les offres groupées sont totalement interdites en Europe",
+      "L'assurance doit toujours représenter plus de 50 % du prix total",
+      "Aucun : tout est permis dans un package"
+    ],
+    correctIndex: 0,
+    explanation: "La DDA encadre les ventes liées : le client doit avoir la possibilité de souscrire le produit de base séparément, et la proposition doit distinguer clairement le coût de l'assurance. L'objectif : un choix éclairé, pas un package imposé.",
+    difficulty: "moyen"
   }
 ];
 
@@ -949,7 +1211,7 @@ const DIFF_CHOICES = [
   { value: "difficile", label: "🔥 Difficile" }
 ];
 
-const COUNT_CHOICES = [5, 10, 15, 0]; // 0 = toutes les questions
+const COUNT_CHOICES = [5, 10, 15, 20, 0]; // 0 = toutes les questions
 
 // ─── State ───
 let phase = "welcome";
