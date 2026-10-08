@@ -668,7 +668,8 @@ const QUESTIONS = [
     ],
     correctIndex: 2,
     explanation: "Les commissions en assurance affinitaire sont souvent élevées (20-50 %), ce qui explique l'attrait du modèle pour les partenaires commerciaux, mais peut poser question sur la valeur pour le client.",
-    difficulty: "difficile"
+    difficulty: "difficile",
+    keepOptionsOrder: true // propositions classées par ordre croissant
   },
   {
     id: 17,
@@ -707,7 +708,8 @@ const QUESTIONS = [
     ],
     correctIndex: 2,
     explanation: "Les projections (McKinsey, Munich Re, etc.) tablent sur un marché de l'embedded insurance dépassant les 700 milliards de dollars de primes d'ici 2030, soit une multiplication par 5 à 10 par rapport à 2020.",
-    difficulty: "difficile"
+    difficulty: "difficile",
+    keepOptionsOrder: true // propositions classées par ordre croissant
   },
   {
     id: 20,
@@ -985,8 +987,18 @@ function shuffle(arr) {
   return a;
 }
 
+// Mélange les options d'une question et recalcule l'index de la bonne réponse.
+// Sauf si l'ordre des propositions est logique (ex : ordre croissant),
+// auquel cas on conserve l'ordre d'origine (flag keepOptionsOrder).
+function prepareQuestion(q) {
+  if (q.keepOptionsOrder) return { ...q };
+  const correctText = q.options[q.correctIndex];
+  const options = shuffle(q.options);
+  return { ...q, options, correctIndex: options.indexOf(correctText) };
+}
+
 function startQuiz() {
-  const pool = shuffle(availableQuestions());
+  const pool = shuffle(availableQuestions()).map(prepareQuestion);
   shuffledQuestions = (selectedCount > 0) ? pool.slice(0, selectedCount) : pool;
   if (shuffledQuestions.length === 0) return;
   phase = "playing";
